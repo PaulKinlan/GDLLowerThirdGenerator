@@ -40,6 +40,9 @@ $(document).ready(function(){
       if (val.formData.tcLower) {
         $("#inputTCLower").val(val.formData.tcLower);
       }
+      if (val.formData.simpleThird) {
+        $("#blankThird").attr("checked", "checked");
+      }
       changeTitleCardType();
     }
   });
@@ -69,6 +72,7 @@ function createOverlays() {
   formData.titleCard = $("#selTitleCard").val();
   formData.tcUpper = $("#inputTCUpper").val();
   formData.tcLower = $("#inputTCLower").val();
+  formData.simpleThird = ($("#blankThird").attr("checked") === "checked");
 
   console.log("Creating Name Card Overlays");
   var allNames = formData.presenters;
@@ -100,6 +104,16 @@ function createOverlays() {
       }
     }
   });
+
+  console.log("Creating Simple Name Overlay");
+  if ($("#blankThird").attr("checked") === "checked") {
+    details = {
+      "filename": "simple.png",
+      "lower": formData.showName,
+      "icon": formData.icon
+    };
+    overlays.push(generateOverlay(details));
+  }
 
   console.log("Creating Questions Overlay");
   if (formData.moderator !== "") {
