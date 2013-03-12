@@ -20,6 +20,8 @@ $(document).ready(function(){
   imgBG.src = '/assets/blank-withurl.png';
   imgTitleCardChrome = new Image();
   imgTitleCardChrome.src = '/assets/titlecard-chrome.png';
+  imgSummaryCardChrome = new Image()
+  imgSummaryCardChrome.src = '/assets/titlecard-chrome.png';
 
   chrome.storage.sync.get("formData", function(val) {
     console.log(val);
@@ -42,6 +44,9 @@ $(document).ready(function(){
       }
       if (val.formData.simpleThird) {
         $("#blankThird").attr("checked", "checked");
+      }
+      if(val.formData.summaryCard) {
+        $("#summaryCard").attr("checked", "checked");
       }
       changeTitleCardType();
     }
@@ -73,6 +78,7 @@ function createOverlays() {
   formData.tcUpper = $("#inputTCUpper").val();
   formData.tcLower = $("#inputTCLower").val();
   formData.simpleThird = ($("#blankThird").attr("checked") === "checked");
+  formData.summaryCard = ($("#summaryCard").attr("checked") === "checked");
 
   console.log("Creating Name Card Overlays");
   var allNames = formData.presenters;
@@ -153,6 +159,11 @@ function createOverlays() {
   if (formData.titleCard != "none") {
     overlays.push(generateTitleCard(formData.titleCard, formData.tcUpper, formData.tcLower));
   }
+  
+  console.log("Creating Summary Card");
+  if (formData.summaryCard != "none") {
+    overlays.push(generateSummaryCard(formData.titleCard, formData.tcUpper, formData.tcLower, formData.presenters, formData.moderator, formData.docs));
+  }
 
   chrome.storage.sync.set({"formData": formData}, function() {
     console.log("Saved Form Data", formData);
@@ -161,6 +172,59 @@ function createOverlays() {
   $("#butCreate").removeAttr("disabled");
   return false;
 }
+
+function generateSummaryCard(card, upper, lower, presenters, moderator, docs ) {
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext('2d');
+  
+  ctx.clearRect(0, 0, 1920, 1080);
+
+  if (card == "gdl") {
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, 1920, 1080);
+    ctx.drawImage(imgGDLLogo, 500, 470);
+    ctx.fillStyle = "black";
+    ctx.font = fontLarge;
+    ctx.textAlign = "center";
+    ctx.fillText(upper, 960, 500);
+    ctx.font = fontSmall;
+    ctx.fillStyle = "#777777";
+    ctx.fillText(lower, 960, 575);
+  } else if (card == "chrome") {
+    ctx.drawImage(imgTitleCardChrome, 0, 0);
+    ctx.fillStyle = "black";
+    ctx.font = fontLargeChrome;
+    ctx.textAlign = "center";
+    ctx.fillText(upper, 1440, 175);
+    ctx.font = fontSmallChrome;
+    ctx.fillStyle = "#777777";
+    ctx.fillText(lower, 1440, 250);
+  
+    var offset = 500; 
+    if(!!docs) {
+      ctx.textAlign = "left";
+      ctx.font = fontLargeChrome;
+      ctx.fillText("Documentation", 1100, offset += 75);
+      ctx.font = fontSmallChrome;
+      ctx.fillText(docs, 1100, offset += 75);
+    }
+
+    offset += 15;
+    if(!!moderator) {
+      ctx.textAlign = "left";
+      ctx.font = fontLargeChrome;
+      ctx.fillText("Questions", 1100, offset += 75);
+      ctx.font = fontSmallChrome;
+      ctx.fillText(moderator, 1100, offset +=75);
+    }
+  }
+
+  var details = {};
+  details.filename = "summary.png";
+  details.image = canvas.toDataURL("image/png");
+  return details;
+}
+
 
 function generateTitleCard(card, upper, lower) {
   var canvas = document.getElementById("canvas");
