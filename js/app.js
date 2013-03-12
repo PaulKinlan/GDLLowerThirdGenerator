@@ -7,6 +7,7 @@ var fontLargeChrome = "62pt Open Sans";
 var fontSmallChrome = "lighter 48pt Open Sans";
 
 $("form").submit(createOverlays);
+$("form").change(previewOverlays);
 $("#selTitleCard").bind("change", changeTitleCardType);
 
 $(document).ready(function(){
@@ -56,10 +57,22 @@ function changeTitleCardType(evt) {
   }
 }
 
+function previewOverlays() {
+  var overlays = renderOverlays(); 
+  $("#preview").html("");
+  overlays.forEach(function(item, index) {
+    $("#preview").append("<h3>" + item.filename + "</h3><img src='" + item.image + "'>");
+  });
+}
 
 function createOverlays() {
+  saveZip(renderOverlays());  
+  return false;
+}
+
+function renderOverlays() {
   $("#butCreate").attr("disabled", "disabled");
-  overlays = [];
+  var overlays = [];
   var details;
   var formData = {};
   formData.showName = $("#showName").val().trim();
@@ -157,9 +170,9 @@ function createOverlays() {
   chrome.storage.sync.set({"formData": formData}, function() {
     console.log("Saved Form Data", formData);
   });
-  saveZip(overlays);
+
   $("#butCreate").removeAttr("disabled");
-  return false;
+  return overlays;
 }
 
 function generateTitleCard(card, upper, lower) {
