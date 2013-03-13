@@ -199,7 +199,7 @@ function renderOverlays() {
   }
   
   console.log("Creating Summary Card");
-  if (formData.summaryCard != "none") {
+  if (formData.summaryCard) {
     overlays.push(generateSummaryCard(formData.titleCard, formData.tcUpper, formData.tcLower, formData.presenters, formData.moderator, formData.docs));
   }
 
