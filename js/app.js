@@ -5,10 +5,13 @@ var fontThin = "40pt Helvetica Neue LT Std";
 var fontLarge = "56pt Helvetica Neue";
 var fontLargeChrome = "62pt Open Sans";
 var fontSmallChrome = "lighter 48pt Open Sans";
+var newCardTemplate = '<div class="controls othercard"><input class="input-large inputOtherUpper" type="text" placeholder="Upper Text (Smaller)"> <br> <input class="input-large inputOtherLower" type="text" placeholder="Lower Text (Larger)"><br><a href="#" class="delete">Delete</a></div>';
 
 $("form").submit(createOverlays);
 $("form").change(previewOverlays);
 $("#selTitleCard").bind("change", changeTitleCardType);
+$("#addNewCard").click(addNewCard);
+$("a.delete").live('click', deleteCard);
 
 $(document).ready(function(){
   imgChromeLogo = new Image();
@@ -31,8 +34,14 @@ $(document).ready(function(){
       $("#presenterNames").val(val.formData.presenters);
       $("#questionsLink").val(val.formData.moderator);
       $("#docsLink").val(val.formData.docs);
-      $("#inputOtherUpper").val(val.formData.otherUpper);
-      $("#inputOtherLower").val(val.formData.otherLower);
+      var others = val.formData.other;
+      for(var o = 0; o < others.length; o++) {
+        var el = $("#newCards").append(newCardTemplate);
+     
+        $(".inputOtherUpper:eq(" + o + ")", el).val(val.formData.other[o].upper);
+        $(".inputOtherLower:eq(" + o + ")", el).val(val.formData.other[o].lower);
+      }
+
       $("#selLogo").val(val.formData.icon);
       if (val.formData.titleCard) {
         $("#selTitleCard").val(val.formData.titleCard);
@@ -62,6 +71,21 @@ function changeTitleCardType(evt) {
   }
 }
 
+function addNewCard(e) {
+  e.preventDefault();
+
+  $("#newCards").append(newCardTemplate);
+  return false;
+}
+
+function deleteCard(e) {
+  e.preventDefault();
+  
+  $(e.target).parent(".othercard").remove();
+  previewOverlays();
+  return false;
+}
+
 function previewOverlays() {
   var overlays = renderOverlays(); 
   $("#preview").html("");
@@ -84,8 +108,7 @@ function renderOverlays() {
   formData.presenters = $("#presenterNames").val().trim();
   formData.moderator = $("#questionsLink").val().trim();
   formData.docs = $("#docsLink").val().trim();
-  formData.otherUpper = $("#inputOtherUpper").val().trim();
-  formData.otherLower = $("#inputOtherLower").val().trim();
+  formData.other = $.map($(".othercard"), function(item) { return { upper: $(".inputOtherUpper", item).val().trim() , lower: $(".inputOtherLower", item).val().trim()}});
   formData.icon = $("#selLogo").val();
   formData.titleCard = $("#selTitleCard").val();
   formData.tcUpper = $("#inputTCUpper").val();
@@ -157,15 +180,17 @@ function renderOverlays() {
     overlays.push(generateOverlay(details));
   }
 
-  console.log("Creating Other Overlay");
-  if (formData.otherLower !== "") {
-    details = {
-      'filename': 'other.png',
-      'upperLeft': formData.otherUpper,
-      'lower': formData.otherLower,
-      'icon': formData.icon
-    };
-    overlays.push(generateOverlay(details));
+  console.log("Creating Other Overlay(s)");
+  if (formData.other !== "") {
+    for(var o = 0; o < formData.other.length; o++) {
+      details = {
+        'filename': 'other' + o +'.png',
+        'upperLeft': formData.other[o].upper,
+        'lower': formData.other[o].lower,
+        'icon': formData.icon
+      };
+      overlays.push(generateOverlay(details));
+    }
   }
 
   console.log("Creating Title Card");

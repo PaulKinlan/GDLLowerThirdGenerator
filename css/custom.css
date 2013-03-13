@@ -4,6 +4,14 @@ body {
   font-family: 'Helvetica Neue', 'Times New Roman' !important;
 }
 
+body > .container {
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
 canvas {
   position: absolute;
   left: 1000px;
@@ -19,14 +27,34 @@ canvas {
   overflow-x: scroll;
 }
 
-#preview {
+fieldset {
   overflow-x: auto;
-  height: 600px;
+  position: absolute;
+  top:0;
+  left:50%;
+  right: 0;
+  bottom: 0;
+}
+
+#addNewCard {
+  margin-top: 5px;
+  clear: both;
+}
+
+.othercard {
+  margin-top: 10px;
+}
+
+.inputOtherLower {
+ margin-top: 5px; 
 }
 
 form {
-  float: left;
   width: 50%;
+  overflow-y: scroll;
+  position: absolute;
+  top: 0;
+  bottom: 0;
 }
 
 .imgPreview {
