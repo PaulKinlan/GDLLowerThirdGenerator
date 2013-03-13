@@ -10,12 +10,23 @@ canvas {
   top: 0px;
   width: 1920px;
   height: 1080px;
+  display: none;
 }
 
 #picSlider {
   border: 1px solid black;
   height: 155px;
   overflow-x: scroll;
+}
+
+#preview {
+  overflow-x: auto;
+  height: 600px;
+}
+
+form {
+  float: left;
+  width: 50%;
 }
 
 .imgPreview {
