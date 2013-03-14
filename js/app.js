@@ -1,8 +1,8 @@
 
 var imgBG, imgChromeLogo, imgGDLLogo, imgNamePlaccard, imgTitleCardChrome;
-var fontSmall = "42pt Helvetica Neue";
-var fontThin = "40pt Helvetica Neue LT Std";
-var fontLarge = "56pt Helvetica Neue";
+var fontSmall = "42pt Roboto"
+var fontThin = "40pt Roboto";
+var fontLarge = "56pt Roboto";
 var fontLargeChrome = "62pt Open Sans";
 var fontSmallChrome = "lighter 48pt Open Sans";
 var newCardTemplate = '<div class="controls othercard"><input class="input-large inputOtherUpper" type="text" placeholder="Upper Text (Smaller)"> <br> <input class="input-large inputOtherLower" type="text" placeholder="Lower Text (Larger)"><br><a href="#" class="delete">Delete</a></div>';
